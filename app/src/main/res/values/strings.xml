@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Game of Thrones</string>
+
+    <string name="house_region">Region</string>
+    <string name="house_coat_of_arms">Coat of Arms</string>
+    <string name="house_words">Words</string>
+    <string name="house_titles">Titles</string>
+    <string name="house_seats">Seats</string>
+</resources>
