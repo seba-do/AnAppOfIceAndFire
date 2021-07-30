@@ -1,70 +1,67 @@
-import com.ttdrp.gameofthrones.buildsrc.AppConfig
-import com.ttdrp.gameofthrones.buildsrc.Versions
-import com.ttdrp.gameofthrones.buildsrc.Libs
-
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'kotlin-kapt'
+    id("com.android.application")
+    kotlin("android")
+    kotlin("kapt")
 }
 
 android {
-    compileSdk AppConfig.compileSdk
-    buildToolsVersion AppConfig.buildToolsVersion
-
     defaultConfig {
-        applicationId "com.ttdrp.gameofthrones"
-        minSdk AppConfig.minSdk
-        targetSdk AppConfig.targetSdk
-        versionCode AppConfig.versionCode
-        versionName AppConfig.versionName
+        applicationId = AppConfig.applicationId
+        buildToolsVersion = AppConfig.buildToolsVersion
 
-        testInstrumentationRunner AppConfig.androidTestInstrumentation
+        minSdk = AppConfig.minSdk
+        targetSdk = AppConfig.targetSdk
+        compileSdk = AppConfig.compileSdk
+
+        versionCode = AppConfig.versionCode
+        versionName = AppConfig.versionName
+
+        testInstrumentationRunner = AppConfig.androidTestInstrumentation
     }
 
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), AppConfig.proguardConsumerRules)
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
+        jvmTarget = "1.8"
     }
+
     buildFeatures {
-        compose true
+        compose = true
     }
+
     composeOptions {
-        kotlinCompilerExtensionVersion Versions.compose
-        kotlinCompilerVersion Versions.kotlin
+        kotlinCompilerExtensionVersion = Versions.compose
     }
 }
 
 dependencies {
 
-    implementation Libs.AndroidX.coreKtx
-    implementation Libs.AndroidX.AppCompat.appCompat
-    implementation Libs.AndroidX.Activity.activityCompose
-    implementation Libs.AndroidX.Compose.composeUi
-    implementation Libs.AndroidX.Compose.composeUiTooling
-    implementation Libs.AndroidX.Compose.composeMaterial
-    implementation Libs.AndroidX.Compose.composeMaterialExtended
-    implementation Libs.AndroidX.Lifecycle.runtime
-    implementation Libs.AndroidX.Lifecycle.viewModel
-    implementation Libs.Material.material
-    implementCompose()
+    implementation(Libraries.AndroidX.coreKtx)
+    implementation(Libraries.AndroidX.appCompat)
+    implementation(Libraries.AndroidX.activityCompose)
+    implementation(Libraries.Compose.ui)
+    implementation(Libraries.Compose.uiTooling)
+    implementation(Libraries.Compose.material)
+    implementation(Libraries.Compose.materialExtended)
+    implementation(Libraries.Lifecycle.runtime)
+    implementation(Libraries.Lifecycle.viewModel)
 
-    implementation Libs.Squareup.Retrofit.retrofit
-    implementation Libs.Squareup.Retrofit.moshiConverter
-    implementation Libs.Squareup.Moshi.moshi
+    implementation(Libraries.Squareup.retrofit)
+    implementation(Libraries.Squareup.moshiConverter)
+    implementation(Libraries.Squareup.moshi)
 
-    testImplementation Libs.JUnit.junit
-    androidTestImplementation Libs.AndroidX.Test.ext
-    androidTestImplementation Libs.AndroidX.Test.espresso
-    androidTestImplementation Libs.AndroidX.Test.uiTestJunit
+    testImplementation(Libraries.Test.junit)
+    androidTestImplementation(Libraries.Test.ext)
+    androidTestImplementation(Libraries.Test.espresso)
+    androidTestImplementation(Libraries.Test.uiTestJunit)
 }

@@ -1,6 +1,5 @@
-package com.ttdrp.gameofthrones.buildsrc
-
 object AppConfig {
+    const val applicationId = "com.ttdrp.gameofthrones"
     const val compileSdk = 30
     const val minSdk = 26
     const val targetSdk = 30
@@ -10,5 +9,4 @@ object AppConfig {
 
     const val androidTestInstrumentation = "androidx.text.runner.AndroidJUnitRunner"
     const val proguardConsumerRules = "consumer-rules.pro"
-    const val dimension = "environment"
 }
