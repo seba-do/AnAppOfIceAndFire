@@ -57,6 +57,7 @@ dependencies {
     implementation Libs.AndroidX.Lifecycle.runtime
     implementation Libs.AndroidX.Lifecycle.viewModel
     implementation Libs.Material.material
+    implementCompose()
 
     implementation Libs.Squareup.Retrofit.retrofit
     implementation Libs.Squareup.Retrofit.moshiConverter
