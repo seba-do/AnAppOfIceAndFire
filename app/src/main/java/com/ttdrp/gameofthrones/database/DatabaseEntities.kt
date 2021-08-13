@@ -1,8 +1,14 @@
-package com.ttdrp.gameofthrones.model
+package com.ttdrp.gameofthrones.database
 
-import com.ttdrp.gameofthrones.database.DatabaseHouse
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.ttdrp.gameofthrones.model.House
 
-data class House(
+@Entity
+data class DatabaseHouse constructor(
+    @PrimaryKey
     val url: String,
     val name: String,
     val region: String,
@@ -21,8 +27,8 @@ data class House(
     val swornMembers: List<String>
 )
 
-fun List<House>.asDatabaseModel(): List<DatabaseHouse> = map {
-    DatabaseHouse(
+fun List<DatabaseHouse>.asDomainModel(): List<House> = map {
+    House(
         url = it.url,
         name = it.name,
         region = it.region,

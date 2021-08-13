@@ -10,4 +10,6 @@ interface IHousesRepository {
 
     /** Get a list with all Houses */
     suspend fun getHouses(): Result<List<House>>
+
+    suspend fun refreshHouses(): Result<Unit>
 }

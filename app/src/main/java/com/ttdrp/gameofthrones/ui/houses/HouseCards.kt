@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
 import com.ttdrp.gameofthrones.data.houses.impl.house1
 import com.ttdrp.gameofthrones.data.houses.impl.houseDiedOut
@@ -49,12 +50,14 @@ fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
 
 @Composable
 fun HouseCard(
+    navController: NavController,
     house: House,
-    navigateTo: (Screen) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { navigateTo(Screen.House(house.name)) })
+            .clickable(onClick = {
+                navController.navigate("house/${house.name}")
+            })
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.weight(1f)) {
@@ -71,6 +74,6 @@ fun HouseCardPreview() {
     val house = houseDiedOut
 
     ThemedPreview {
-        HouseCard(house = house, {})
+//        HouseCard(house = house, {})
     }
 }

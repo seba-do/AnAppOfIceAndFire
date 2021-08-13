@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -11,41 +13,40 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.Result
-import com.ttdrp.gameofthrones.data.houses.IHousesRepository
 import com.ttdrp.gameofthrones.data.houses.impl.BlockingFakeHousesRepository
 import com.ttdrp.gameofthrones.model.House
 import com.ttdrp.gameofthrones.ui.Screen
 import com.ttdrp.gameofthrones.ui.ThemedPreview
 import com.ttdrp.gameofthrones.ui.state.UiState
 import com.ttdrp.gameofthrones.utils.produceUiState
+import com.ttdrp.gameofthrones.viewmodels.HousesViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun HousesScreen(
-    navigateTo: (Screen) -> Unit,
-    housesRepository: IHousesRepository,
+    navController: NavController,
+    housesViewModel: HousesViewModel,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (houseUiState, refreshHouse, clearError) = produceUiState(housesRepository) {
-        getHouses()
+    val (houseUiState) = produceUiState(housesViewModel) {
+        housesViewModel.getHouses()
     }
 
-    val coroutineScope = rememberCoroutineScope()
-
     HousesScreen(
-        houses = houseUiState.value,
-        navigateTo = navigateTo,
+        navController = navController,
+        uiState = houseUiState.value,
         scaffoldState = scaffoldState
     )
 }
 
 @Composable
 fun HousesScreen(
-    houses: UiState<List<House>>,
-    navigateTo: (Screen) -> Unit,
+    navController: NavController,
+    uiState: UiState<List<House>>,
     scaffoldState: ScaffoldState
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -69,13 +70,13 @@ fun HousesScreen(
         content = { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
             LoadingContent(
-                empty = houses.initialLoad,
+                empty = uiState.initialLoad,
                 emptyContent = { FullScreenLoading() },
-                loading = houses.loading,
+                loading = uiState.loading,
                 content = {
                     HousesScreenErrorAndContent(
-                        houses = houses,
-                        navigateTo = navigateTo,
+                        navController = navController,
+                        houses = uiState,
                         modifier = modifier
                     )
                 }
@@ -111,38 +112,44 @@ fun FullScreenLoading() {
 
 @Composable
 private fun HousesScreenErrorAndContent(
+    navController: NavController,
     houses: UiState<List<House>>,
-    navigateTo: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (houses.data != null) {
-        HousesList(houses.data, navigateTo, modifier)
+        HousesList(
+            navController = navController,
+            houses = houses.data,
+            modifier = modifier
+        )
     } else {
-        Box(modifier.fillMaxSize()) {}
+        Box(modifier.fillMaxSize()) {
+            Text(text = "An unknown Error occurred")
+        }
     }
 }
 
 @Composable
 private fun HousesList(
+    navController: NavController,
     houses: List<House>,
-    navigateTo: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
-        item { HousesSection(houses = houses, navigateTo) }
+        item { HousesSection(navController = navController, houses = houses) }
     }
 }
 
 @Composable
 private fun HousesSection(
+    navController: NavController,
     houses: List<House>,
-    navigateTo: (Screen) -> Unit
 ) {
     Column {
         houses.forEach { house ->
             HouseCard(
-                house = house,
-                navigateTo = navigateTo
+                navController = navController,
+                house = house
             )
             HouseListDivider()
         }
@@ -163,7 +170,7 @@ private fun HouseListDivider() {
 fun PreviewHousesScreenBody() {
     ThemedPreview {
         val houses = loadMockHouses()
-        HousesList(houses = houses, {})
+//        HousesList(houses = houses)
     }
 }
 
@@ -172,14 +179,13 @@ fun PreviewHousesScreenBody() {
 fun PreviewHousesScreenBodyDark() {
     ThemedPreview(darkTheme = true) {
         val houses = loadMockHouses()
-        HousesList(houses = houses, {})
+//        HousesList(houses = houses, {})
     }
 }
 
 @Composable
 private fun loadMockHouses(): List<House> {
-    val houses = runBlocking {
-        BlockingFakeHousesRepository().getHouses()
+    return runBlocking {
+        BlockingFakeHousesRepository().houses.value
     }
-    return (houses as Result.Success).data
 }

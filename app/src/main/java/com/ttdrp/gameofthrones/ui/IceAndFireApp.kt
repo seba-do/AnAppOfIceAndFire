@@ -1,41 +1,39 @@
 package com.ttdrp.gameofthrones.ui
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.Composable
-import com.ttdrp.gameofthrones.data.AppContainer
-import com.ttdrp.gameofthrones.data.houses.IHousesRepository
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
+import androidx.navigation.compose.rememberNavController
 import com.ttdrp.gameofthrones.ui.houses.HouseScreen
 import com.ttdrp.gameofthrones.ui.houses.HousesScreen
 import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
+import com.ttdrp.gameofthrones.viewmodels.HouseViewModel
+import com.ttdrp.gameofthrones.viewmodels.HousesViewModel
 
 @Composable
-fun IceAndFireApp(
-    appContainer: AppContainer,
-    navigationViewModel: NavigationViewModel
-) {
+fun IceAndFireApp() {
+    val navController = rememberNavController()
+
     GameOfThronesTheme {
-        AppContent(
-            navigationViewModel = navigationViewModel,
-            housesRepository = appContainer.housesRepository
-        )
-    }
-}
-
-@Composable
-private fun AppContent(
-    navigationViewModel: NavigationViewModel,
-    housesRepository: IHousesRepository
-) {
-    Crossfade(navigationViewModel.currentScreen) { screen ->
-        when (screen) {
-            is Screen.Overview -> HousesScreen(
-                navigateTo = navigationViewModel::navigateTo,
-                housesRepository = housesRepository
-            )
-            is Screen.House -> HouseScreen(
-                houseName = screen.name,
-                housesRepository = housesRepository
-            )
+        NavHost(navController = navController, startDestination = "houses") {
+            composable("houses") {
+                val housesViewModel = hiltViewModel<HousesViewModel>()
+                HousesScreen(navController, housesViewModel)
+            }
+            composable(
+                route = "house/{houseName}",
+                arguments = listOf(navArgument("houseName") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val houseViewModel = hiltViewModel<HouseViewModel>()
+                HouseScreen(
+                    navController = navController,
+                    houseViewModel = houseViewModel,
+                    houseName = backStackEntry.arguments?.getString("houseName") ?: ""
+                )
+            }
         }
     }
 }

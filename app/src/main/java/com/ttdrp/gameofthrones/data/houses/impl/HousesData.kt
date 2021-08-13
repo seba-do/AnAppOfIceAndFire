@@ -240,7 +240,7 @@ val house10 = House(
 
 val houseDiedOut = house1.copy(diedOut = "Some war")
 
-val houses: List<House> =
+val housesMock: List<House> =
     listOf(
         house1, house2, house3, house4, house5, house6, house7, house8, house9, house10, houseDiedOut
     )

@@ -3,6 +3,7 @@ object Libraries {
     object Classpath {
         const val gradle = "com.android.tools.build:gradle:${Versions.classpathGradle}"
         const val kotlinGradle = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
+        const val hilt = "com.google.dagger:hilt-android-gradle-plugin:${Versions.hilt}"
     }
 
     object AndroidX {
@@ -16,11 +17,32 @@ object Libraries {
         const val material = "androidx.compose.material:material:${Versions.compose}"
         const val materialExtended = "androidx.compose.material:material-icons-extended:${Versions.compose}"
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
+        const val hiltNavigation = "androidx.hilt:hilt-navigation-compose:${Versions.hiltNavigationCompose}"
     }
 
     object Lifecycle {
         const val runtime = "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.lifecycle}"
         const val viewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.lifecycle}"
+        const val viewModelCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:${Versions.lifecycleCompose}"
+    }
+
+    object Room {
+        const val room = "androidx.room:room-runtime:${Versions.room}"
+        const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
+        const val roomKapt = "androidx.room:room-compiler:${Versions.room}"
+    }
+
+    object Hilt {
+        const val hilt = "com.google.dagger:hilt-android:${Versions.hilt}"
+        const val hiltKapt = "com.google.dagger:hilt-android-compiler:${Versions.hilt}"
+    }
+
+    object Navigation {
+        const val compose = "androidx.navigation:navigation-compose:${Versions.navigationCompose}"
+    }
+
+    object Others {
+        const val gson = "com.google.code.gson:gson:${Versions.gson}"
     }
 
     object Squareup {

@@ -12,6 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
 import com.ttdrp.gameofthrones.data.Result
 import com.ttdrp.gameofthrones.data.houses.IHousesRepository
@@ -20,19 +22,24 @@ import com.ttdrp.gameofthrones.model.House
 import com.ttdrp.gameofthrones.ui.ThemedPreview
 import com.ttdrp.gameofthrones.ui.state.UiState
 import com.ttdrp.gameofthrones.utils.produceUiState
+import com.ttdrp.gameofthrones.viewmodels.HouseViewModel
 import kotlinx.coroutines.runBlocking
 
 @Composable
 fun HouseScreen(
+    navController: NavController,
+    houseViewModel: HouseViewModel,
     houseName: String,
-    housesRepository: IHousesRepository,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    val (houseUiState) = produceUiState(housesRepository) {
-        getHouse(houseName)
+    val (houseUiState) = produceUiState(houseViewModel) {
+        houseViewModel.getHouse(houseName)
     }
 
-    HouseScreen(house = houseUiState.value, scaffoldState = scaffoldState)
+    HouseScreen(
+        house = houseUiState.value,
+        scaffoldState = scaffoldState
+    )
 }
 
 @Composable

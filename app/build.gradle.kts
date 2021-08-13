@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -45,20 +46,34 @@ android {
 }
 
 dependencies {
-
     implementation(Libraries.AndroidX.coreKtx)
     implementation(Libraries.AndroidX.appCompat)
     implementation(Libraries.AndroidX.activityCompose)
+
     implementation(Libraries.Compose.ui)
     implementation(Libraries.Compose.uiTooling)
     implementation(Libraries.Compose.material)
     implementation(Libraries.Compose.materialExtended)
+    implementation(Libraries.Compose.hiltNavigation)
+
     implementation(Libraries.Lifecycle.runtime)
     implementation(Libraries.Lifecycle.viewModel)
+    implementation(Libraries.Lifecycle.viewModelCompose)
+
+    implementation(Libraries.Room.room)
+    implementation(Libraries.Room.roomKtx)
+    kapt(Libraries.Room.roomKapt)
+
+    implementation(Libraries.Hilt.hilt)
+    kapt(Libraries.Hilt.hiltKapt)
+
+    implementation(Libraries.Navigation.compose)
 
     implementation(Libraries.Squareup.retrofit)
     implementation(Libraries.Squareup.moshiConverter)
     implementation(Libraries.Squareup.moshi)
+
+    implementation(Libraries.Others.gson)
 
     testImplementation(Libraries.Test.junit)
     androidTestImplementation(Libraries.Test.ext)
