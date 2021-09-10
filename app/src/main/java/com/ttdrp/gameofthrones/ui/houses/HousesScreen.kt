@@ -1,5 +1,6 @@
 package com.ttdrp.gameofthrones.ui.houses
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
@@ -21,6 +22,7 @@ import com.ttdrp.gameofthrones.model.House
 import com.ttdrp.gameofthrones.ui.Screen
 import com.ttdrp.gameofthrones.ui.ThemedPreview
 import com.ttdrp.gameofthrones.ui.state.UiState
+import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
 import com.ttdrp.gameofthrones.utils.produceUiState
 import com.ttdrp.gameofthrones.viewmodels.HousesViewModel
 import kotlinx.coroutines.launch
@@ -37,17 +39,17 @@ fun HousesScreen(
     }
 
     HousesScreen(
-        navController = navController,
         uiState = houseUiState.value,
-        scaffoldState = scaffoldState
+        scaffoldState = scaffoldState,
+        navigateToHouse = { navController.navigate(it) }
     )
 }
 
 @Composable
 fun HousesScreen(
-    navController: NavController,
     uiState: UiState<List<House>>,
-    scaffoldState: ScaffoldState
+    scaffoldState: ScaffoldState,
+    navigateToHouse: (String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -75,9 +77,9 @@ fun HousesScreen(
                 loading = uiState.loading,
                 content = {
                     HousesScreenErrorAndContent(
-                        navController = navController,
                         houses = uiState,
-                        modifier = modifier
+                        modifier = modifier,
+                        navigateToHouse = navigateToHouse
                     )
                 }
             )
@@ -112,15 +114,15 @@ fun FullScreenLoading() {
 
 @Composable
 private fun HousesScreenErrorAndContent(
-    navController: NavController,
     houses: UiState<List<House>>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToHouse: (String) -> Unit
 ) {
     if (houses.data != null) {
         HousesList(
-            navController = navController,
             houses = houses.data,
-            modifier = modifier
+            modifier = modifier,
+            navigateToHouse = navigateToHouse
         )
     } else {
         Box(modifier.fillMaxSize()) {
@@ -131,25 +133,25 @@ private fun HousesScreenErrorAndContent(
 
 @Composable
 private fun HousesList(
-    navController: NavController,
     houses: List<House>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navigateToHouse: (String) -> Unit
 ) {
     LazyColumn(modifier = modifier) {
-        item { HousesSection(navController = navController, houses = houses) }
+        item { HousesSection(houses = houses, navigateToHouse = navigateToHouse) }
     }
 }
 
 @Composable
 private fun HousesSection(
-    navController: NavController,
     houses: List<House>,
+    navigateToHouse: (String) -> Unit
 ) {
     Column {
         houses.forEach { house ->
             HouseCard(
-                navController = navController,
-                house = house
+                house = house,
+                navigateToHouse = navigateToHouse
             )
             HouseListDivider()
         }
@@ -165,27 +167,16 @@ private fun HouseListDivider() {
 }
 
 
-@Preview("Houses screen body")
+@Preview("Houses screen")
+@Preview("Houses screen (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewHousesScreenBody() {
-    ThemedPreview {
-        val houses = loadMockHouses()
-//        HousesList(houses = houses)
-    }
-}
-
-@Preview("Houses screen dark theme")
-@Composable
-fun PreviewHousesScreenBodyDark() {
-    ThemedPreview(darkTheme = true) {
-        val houses = loadMockHouses()
-//        HousesList(houses = houses, {})
-    }
-}
-
-@Composable
-private fun loadMockHouses(): List<House> {
-    return runBlocking {
-        BlockingFakeHousesRepository().houses.value
+fun PreviewHousesScreen() {
+    val houses = runBlocking { BlockingFakeHousesRepository().houses.value }
+    GameOfThronesTheme {
+        val scaffoldState = rememberScaffoldState()
+        HousesScreen(
+            uiState = UiState(data = houses),
+            scaffoldState = scaffoldState,
+        ) {}
     }
 }

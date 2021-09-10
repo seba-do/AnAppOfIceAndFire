@@ -1,5 +1,6 @@
 package com.ttdrp.gameofthrones.ui.houses
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,13 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.houses.impl.house1
 import com.ttdrp.gameofthrones.data.houses.impl.houseDiedOut
 import com.ttdrp.gameofthrones.model.House
-import com.ttdrp.gameofthrones.ui.Screen
-import com.ttdrp.gameofthrones.ui.ThemedPreview
+import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
 
 
 @Composable
@@ -43,20 +42,20 @@ fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
                 .size(40.dp, 40.dp)
                 .clip(MaterialTheme.shapes.small)
                 .padding(5.dp)
-        )    
+        )
     }
-    
+
 }
 
 @Composable
 fun HouseCard(
-    navController: NavController,
     house: House,
+    navigateToHouse: (String) -> Unit,
 ) {
     Row(
         modifier = Modifier
             .clickable(onClick = {
-                navController.navigate("house/${house.name}")
+                navigateToHouse("house/${house.name}")
             })
             .padding(16.dp)
     ) {
@@ -68,12 +67,15 @@ fun HouseCard(
     }
 }
 
-@Preview("House card")
+@Preview("House died out")
+@Preview("House died out (dark)", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun HouseCardPreview() {
     val house = houseDiedOut
 
-    ThemedPreview {
-//        HouseCard(house = house, {})
+    GameOfThronesTheme {
+        Surface {
+            HouseCard(house = house) {}
+        }
     }
 }
