@@ -14,27 +14,24 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.houses.impl.house1
-import com.ttdrp.gameofthrones.data.houses.impl.houseDiedOut
-import com.ttdrp.gameofthrones.model.House
-import com.ttdrp.gameofthrones.ui.Screen
+import com.ttdrp.gameofthrones.data.houses.HouseResponse
+import com.ttdrp.gameofthrones.data.houses.houseDiedOut
 import com.ttdrp.gameofthrones.ui.ThemedPreview
 
 
 @Composable
-fun HouseName(house: House) {
+fun HouseName(house: HouseResponse) {
     Text(house.name, style = MaterialTheme.typography.subtitle1)
 }
 
 @Composable
-fun RegionName(house: House) {
+fun RegionName(house: HouseResponse) {
     Text(house.region, style = MaterialTheme.typography.subtitle2)
 }
 
 @Composable
-fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
+fun HouseStatusImage(house: HouseResponse, modifier: Modifier = Modifier) {
     if (house.diedOut.isNotEmpty()) {
         Image(
             painter = painterResource(id = R.drawable.ic_cross),
@@ -50,13 +47,13 @@ fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
 
 @Composable
 fun HouseCard(
-    navController: NavController,
-    house: House,
+    house: HouseResponse,
+    onHouseClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .clickable(onClick = {
-                navController.navigate("house/${house.name}")
+                onHouseClick(house.name)
             })
             .padding(16.dp)
     ) {

@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import com.ttdrp.gameofthrones.ui.houses.HouseScreen
+import com.ttdrp.gameofthrones.ui.housedetails.HouseScreen
 import com.ttdrp.gameofthrones.ui.houses.HousesScreen
 import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
 import com.ttdrp.gameofthrones.viewmodels.HouseViewModel

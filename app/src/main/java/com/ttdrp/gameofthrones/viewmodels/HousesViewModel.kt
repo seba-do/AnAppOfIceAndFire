@@ -2,28 +2,40 @@ package com.ttdrp.gameofthrones.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ttdrp.gameofthrones.data.houses.impl.BlockingFakeHousesRepository
-import com.ttdrp.gameofthrones.data.houses.impl.HousesRepository
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.ttdrp.gameofthrones.data.houses.HouseRepository
+import com.ttdrp.gameofthrones.data.houses.HouseResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class HousesViewModel @Inject constructor(
-    private val repository: HousesRepository
+    private val repository: HouseRepository,
 ) : ViewModel() {
 
-    val houses = repository.houses
+    val pagingDataFlow: Flow<PagingData<HouseResponse>>
 
     init {
-        refreshDataFromRepository()
+        val actionStateFlow = MutableSharedFlow<UiAction>()
+        val loads = actionStateFlow
+            .filterIsInstance<UiAction.Load>()
+            .distinctUntilChanged()
+            .onStart { emit(UiAction.Load) }
+
+        pagingDataFlow = loads
+            .flatMapLatest { loadHouse() }
+            .cachedIn(viewModelScope)
     }
 
-    suspend fun getHouses() = repository.getHouses()
+    private fun loadHouse(): Flow<PagingData<HouseResponse>> =
+        repository.getHousesStream()
 
-    private fun refreshDataFromRepository() {
-        viewModelScope.launch {
-            repository.refreshHouses()
-        }
-    }
+}
+
+sealed class UiAction {
+    object Load : UiAction()
 }

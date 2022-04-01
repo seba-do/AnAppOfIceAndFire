@@ -18,6 +18,7 @@ object Libraries {
         const val materialExtended = "androidx.compose.material:material-icons-extended:${Versions.compose}"
         const val uiTooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
         const val hiltNavigation = "androidx.hilt:hilt-navigation-compose:${Versions.hiltNavigationCompose}"
+        const val paging = "androidx.paging:paging-compose:${Versions.pagingCompose}"
     }
 
     object Lifecycle {
@@ -30,6 +31,7 @@ object Libraries {
         const val room = "androidx.room:room-runtime:${Versions.room}"
         const val roomKtx = "androidx.room:room-ktx:${Versions.room}"
         const val roomKapt = "androidx.room:room-compiler:${Versions.room}"
+        const val roomPaging = "androidx.room:room-paging:${Versions.room}"
     }
 
     object Hilt {
