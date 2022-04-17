@@ -5,7 +5,7 @@ object AppConfig {
     const val targetSdk = 31
     const val versionCode = 1
     const val versionName = "1.0.0"
-    const val buildToolsVersion = "30.0.3"
+    const val buildToolsVersion = "31.0.0"
 
     const val androidTestInstrumentation = "androidx.text.runner.AndroidJUnitRunner"
     const val proguardConsumerRules = "consumer-rules.pro"

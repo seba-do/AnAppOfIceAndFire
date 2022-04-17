@@ -1,6 +1,5 @@
 package com.ttdrp.gameofthrones.ui.houses
 
-import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,23 +15,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.houses.impl.houseDiedOut
-import com.ttdrp.gameofthrones.model.House
-import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
+import com.ttdrp.gameofthrones.data.houses.HouseResponse
+import com.ttdrp.gameofthrones.data.houses.houseDiedOut
+import com.ttdrp.gameofthrones.ui.ThemedPreview
 
 
 @Composable
-fun HouseName(house: House) {
+fun HouseName(house: HouseResponse) {
     Text(house.name, style = MaterialTheme.typography.subtitle1)
 }
 
 @Composable
-fun RegionName(house: House) {
+fun RegionName(house: HouseResponse) {
     Text(house.region, style = MaterialTheme.typography.subtitle2)
 }
 
 @Composable
-fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
+fun HouseStatusImage(house: HouseResponse, modifier: Modifier = Modifier) {
     if (house.diedOut.isNotEmpty()) {
         Image(
             painter = painterResource(id = R.drawable.ic_cross),
@@ -42,20 +40,20 @@ fun HouseStatusImage(house: House, modifier: Modifier = Modifier) {
                 .size(40.dp, 40.dp)
                 .clip(MaterialTheme.shapes.small)
                 .padding(5.dp)
-        )
+        )    
     }
-
+    
 }
 
 @Composable
 fun HouseCard(
-    house: House,
-    navigateToHouse: (String) -> Unit,
+    house: HouseResponse,
+    onHouseClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .clickable(onClick = {
-                navigateToHouse("house/${house.name}")
+                onHouseClick(house.name)
             })
             .padding(16.dp)
     ) {
@@ -67,15 +65,12 @@ fun HouseCard(
     }
 }
 
-@Preview("House died out")
-@Preview("House died out (dark)", uiMode = UI_MODE_NIGHT_YES)
+@Preview("House card")
 @Composable
 fun HouseCardPreview() {
     val house = houseDiedOut
 
-    GameOfThronesTheme {
-        Surface {
-            HouseCard(house = house) {}
-        }
+    ThemedPreview {
+//        HouseCard(house = house, {})
     }
 }

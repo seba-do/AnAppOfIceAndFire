@@ -1,36 +1,29 @@
 package com.ttdrp.gameofthrones.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.google.gson.Gson
+import com.ttdrp.gameofthrones.data.houses.HouseResponse
+import com.ttdrp.gameofthrones.data.lord.LordResponse
 import com.ttdrp.gameofthrones.model.House
+import com.ttdrp.gameofthrones.model.Lord
+import com.ttdrp.gameofthrones.model.RemoteKeys
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Singleton
 
-@Dao
-interface HouseDao {
-
-    @Query("select * from databasehouse")
-    suspend fun getHouses(): List<DatabaseHouse>
-
-    @Query("select * from databasehouse where name is (:name)")
-    suspend fun getHouse(name: String): House
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(houses: List<DatabaseHouse>)
-}
-
-@Database(entities = [DatabaseHouse::class], version = 1)
+@Database(
+    entities = [RemoteKeys::class, HouseResponse::class, LordResponse::class],
+    version = 2
+)
 @TypeConverters(RoomConverters::class)
 abstract class HousesDatabase : RoomDatabase() {
-    abstract val houseDao: HouseDao
+    abstract fun houseDao(): HouseDao
+    abstract fun lordDao(): LordDao
+    abstract fun remoteKeysDao(): RemoteKeysDao
 }
 
 @Module
@@ -43,7 +36,7 @@ object HousesDatabaseModule {
         context.applicationContext,
         HousesDatabase::class.java,
         "houses"
-    ).build()
+    ).fallbackToDestructiveMigration().build()
 }
 
 object RoomConverters {
