@@ -10,16 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ttdrp.gameofthrones.utils.*
 
+private const val defaultError = "An unknown error occurred"
 @Composable
 fun FullScreenError(
     modifier: Modifier = Modifier,
-    errorMessage: String = "An unknown error occurred"
+    errorMessage: String = ""
 ) {
     Box(
         modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = errorMessage)
+        Text(text = errorMessage.takeIf { it.isNotBlank() } ?: defaultError)
     }
 }
 
