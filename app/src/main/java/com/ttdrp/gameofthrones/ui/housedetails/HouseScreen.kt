@@ -182,6 +182,57 @@ private fun House(
                 }
             }
         }
+        item {
+            Headlined(headline = "Founded") {
+                if (house.founded.isNotBlank()) {
+                    Text(text = house.founded)
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
+            Headlined(headline = "Founder") {
+                if(house.founder != null) {
+                    Link(linkText = house.founder.name) { onLordClick(house.founder.id) }
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
+            Headlined(headline = "Ancestral Weapons") {
+                if (house.ancestralWeapons.isNotEmpty() && house.ancestralWeapons.first().isNotBlank()){
+                    StringList(list = house.ancestralWeapons)
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
+            Headlined(headline = "Cadet Branches") {
+                if (house.cadetBranches != null) {
+                    LinkList(
+                        list = house.cadetBranches.map { Pair(it.name, it.id) },
+                        onLinkClick = onHouseClick
+                    )
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
+            Headlined(headline = "Sworn Members") {
+                if (house.swornMembers != null) {
+                    LinkList(
+                        list = house.swornMembers.map { Pair(it.name, it.id) },
+                        onLinkClick = onLordClick
+                    )
+                } else {
+                    NoInformation()
+                }
+            }
+        }
     }
 }
 
