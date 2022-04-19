@@ -4,8 +4,6 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.ttdrp.gameofthrones.data.houses.HouseResponse
 import com.ttdrp.gameofthrones.data.lord.LordResponse
-import com.ttdrp.gameofthrones.model.House
-import com.ttdrp.gameofthrones.model.Lord
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
