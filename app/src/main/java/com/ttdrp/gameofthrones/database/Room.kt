@@ -3,10 +3,6 @@ package com.ttdrp.gameofthrones.database
 import android.content.Context
 import androidx.room.*
 import com.google.gson.Gson
-import com.ttdrp.gameofthrones.data.houses.HouseResponse
-import com.ttdrp.gameofthrones.data.lord.LordResponse
-import com.ttdrp.gameofthrones.model.House
-import com.ttdrp.gameofthrones.model.Lord
 import com.ttdrp.gameofthrones.model.RemoteKeys
 import dagger.Module
 import dagger.Provides
@@ -16,8 +12,8 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Database(
-    entities = [RemoteKeys::class, HouseResponse::class, LordResponse::class],
-    version = 2
+    entities = [RemoteKeys::class, HouseDatabase::class, LordDatabase::class],
+    version = 3
 )
 @TypeConverters(RoomConverters::class)
 abstract class HousesDatabase : RoomDatabase() {
