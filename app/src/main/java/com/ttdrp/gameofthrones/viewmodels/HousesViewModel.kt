@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.ttdrp.gameofthrones.data.houses.HouseRepository
 import com.ttdrp.gameofthrones.data.houses.HouseResponse
+import com.ttdrp.gameofthrones.database.HouseDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
@@ -17,7 +18,7 @@ class HousesViewModel @Inject constructor(
     private val repository: HouseRepository,
 ) : ViewModel() {
 
-    val pagingDataFlow: Flow<PagingData<HouseResponse>>
+    val pagingDataFlow: Flow<PagingData<HouseDatabase>>
 
     init {
         val actionStateFlow = MutableSharedFlow<UiAction>()
@@ -31,7 +32,7 @@ class HousesViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
 
-    private fun loadHouse(): Flow<PagingData<HouseResponse>> =
+    private fun loadHouse(): Flow<PagingData<HouseDatabase>> =
         repository.getHousesStream()
 
 }

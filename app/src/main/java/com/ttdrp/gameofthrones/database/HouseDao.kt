@@ -6,23 +6,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.ttdrp.gameofthrones.data.houses.HouseResponse
-import com.ttdrp.gameofthrones.model.House
 
 @Dao
 interface HouseDao {
 
-    @Query("SELECT * FROM HouseResponse")
-    fun getHouses(): PagingSource<Int, HouseResponse>
+    @Query("SELECT * FROM Houses")
+    fun getHouses(): PagingSource<Int, HouseDatabase>
 
-    @Query("select * from HouseResponse where name is (:name)")
-    suspend fun getHouse(name: String): HouseResponse?
+    @Query("select * from Houses where id is (:id)")
+    suspend fun getHouse(id: Int): HouseDatabase?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(houses: List<HouseResponse>)
+    suspend fun insertAll(houses: List<HouseDatabase>)
 
-    @Query("SELECT * FROM HouseResponse WHERE url LIKE :query")
-    fun pagingSource(query: String): PagingSource<Int, House>
-
-    @Query("DELETE FROM HouseResponse")
+    @Query("DELETE FROM Houses")
     suspend fun clearHouses()
 }

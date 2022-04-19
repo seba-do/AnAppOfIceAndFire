@@ -6,7 +6,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.ttdrp.gameofthrones.data.HouseRemoteMediator
 import com.ttdrp.gameofthrones.data.Result
+import com.ttdrp.gameofthrones.database.HouseDatabase
 import com.ttdrp.gameofthrones.database.HousesDatabase
+import com.ttdrp.gameofthrones.database.toDatabaseModel
 import com.ttdrp.gameofthrones.network.ApiService
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -18,7 +20,7 @@ class HouseRepository @Inject constructor(
     private val database: HousesDatabase
 ) {
 
-    fun getHousesStream(): Flow<PagingData<HouseResponse>> {
+    fun getHousesStream(): Flow<PagingData<HouseDatabase>> {
         val pagingSourceFactory = { database.houseDao().getHouses() }
 
         @OptIn(ExperimentalPagingApi::class)
@@ -32,8 +34,11 @@ class HouseRepository @Inject constructor(
         ).flow
     }
 
-    suspend fun getHouse(name: String) = try {
-        val house = database.houseDao().getHouse(name)
+    suspend fun getHouse(id: String) = try {
+        val house = database.houseDao().getHouse(id.toInt())
+            ?: service.getHouse(id)
+                ?.toDatabaseModel()
+                ?.also { database.houseDao().insertAll(listOf(it)) }
             ?: throw NoSuchElementException("House not found")
 
         Result.Success(house)

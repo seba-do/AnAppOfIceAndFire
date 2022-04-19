@@ -1,80 +1,75 @@
 package com.ttdrp.gameofthrones.ui.housedetails
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Divider
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.Result
-import com.ttdrp.gameofthrones.data.houses.HouseResponse
-import com.ttdrp.gameofthrones.data.houses.house1
-import com.ttdrp.gameofthrones.ui.ThemedPreview
-import com.ttdrp.gameofthrones.ui.housedetails.elements.Headlined
-import com.ttdrp.gameofthrones.ui.housedetails.elements.HouseWordQuote
-import com.ttdrp.gameofthrones.ui.housedetails.elements.NoInformation
-import com.ttdrp.gameofthrones.ui.housedetails.elements.StringList
-import com.ttdrp.gameofthrones.ui.houses.FullScreenLoading
+import com.ttdrp.gameofthrones.data.houses.house1Resolved
+import com.ttdrp.gameofthrones.model.HouseResolved
+import com.ttdrp.gameofthrones.ui.LocalNavController
+import com.ttdrp.gameofthrones.ui.LocalTopAppBarController
+import com.ttdrp.gameofthrones.ui.general.DefaultTopAppBar
+import com.ttdrp.gameofthrones.ui.general.FullScreenError
+import com.ttdrp.gameofthrones.ui.general.FullScreenLoading
+import com.ttdrp.gameofthrones.ui.housedetails.elements.*
 import com.ttdrp.gameofthrones.ui.state.UiState
+import com.ttdrp.gameofthrones.utils.ThemedPreview
 import com.ttdrp.gameofthrones.utils.produceUiState
 import com.ttdrp.gameofthrones.viewmodels.HouseViewModel
-import kotlinx.coroutines.runBlocking
 
 @Composable
 fun HouseScreen(
-    navController: NavController,
     houseViewModel: HouseViewModel,
-    houseName: String,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
+    houseId: String,
 ) {
+    val navController = LocalNavController.current
+    val topAppBarController = LocalTopAppBarController.current
+
     val (houseUiState) = produceUiState(houseViewModel) {
-        houseViewModel.getHouse(houseName)
+        houseViewModel.getResolvedHouse(houseId)
+    }
+
+    topAppBarController.update {
+        DefaultTopAppBar(title = houseUiState.value.data?.name ?: "") {
+            navController.navigateUp()
+        }
     }
 
     HouseScreen(
         house = houseUiState.value,
-        scaffoldState = scaffoldState
-    )
+    ) {
+        navController.navigate("lord/$it")
+    }
 }
 
 @Composable
-fun HouseScreen(
-    house: UiState<HouseResponse>,
-    scaffoldState: ScaffoldState
+private fun HouseScreen(
+    house: UiState<HouseResolved>,
+    onLordClick: (String) -> Unit
 ) {
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
-            val title = house.data?.name ?: ""
-            TopAppBar(
-                title = { Text(text = title) }
-            )
-        },
-        content = { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            LoadingContent(
-                empty = house.initialLoad,
-                emptyContent = { FullScreenLoading() },
-                loading = house.loading
-            ) {
-                HouseScreenErrorAndContent(house = house, modifier = modifier)
-            }
-        }
-    )
+    LoadingContent(
+        empty = house.initialLoad,
+        emptyContent = { FullScreenLoading() },
+    ) {
+        HouseScreenErrorAndContent(
+            house = house,
+            onLordClick = onLordClick
+        )
+    }
 }
 
 @Composable
 private fun LoadingContent(
     empty: Boolean,
     emptyContent: @Composable () -> Unit,
-    loading: Boolean,
     content: @Composable () -> Unit
 ) {
     if (empty) {
@@ -86,20 +81,26 @@ private fun LoadingContent(
 
 @Composable
 private fun HouseScreenErrorAndContent(
-    house: UiState<HouseResponse>,
-    modifier: Modifier = Modifier
+    house: UiState<HouseResolved>,
+    modifier: Modifier = Modifier,
+    onLordClick: (String) -> Unit
 ) {
     if (house.data != null) {
-        House(house.data, modifier)
+        House(
+            house = house.data,
+            modifier = modifier,
+            onLordClick = onLordClick
+        )
     } else {
-        Box(modifier.fillMaxSize()) {}
+        FullScreenError(errorMessage = house.exception?.message ?: "")
     }
 }
 
 @Composable
 private fun House(
-    house: HouseResponse,
-    modifier: Modifier = Modifier
+    house: HouseResolved,
+    modifier: Modifier = Modifier,
+    onLordClick: (String) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier.padding(12.dp),
@@ -147,6 +148,16 @@ private fun House(
                 }
             }
         }
+
+        item {
+            Headlined(headline = "Current Lord") {
+                if (house.currentLord != null) {
+                    Link(linkText = house.currentLord.name) { onLordClick(house.id) }
+                } else {
+                    NoInformation()
+                }
+            }
+        }
     }
 }
 
@@ -154,6 +165,6 @@ private fun House(
 @Composable
 fun PreviewHouseScreenBody() {
     ThemedPreview {
-        House(house = house1)
+        House(house = house1Resolved) {}
     }
 }

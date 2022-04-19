@@ -1,82 +1,86 @@
 package com.ttdrp.gameofthrones.ui.houses
 
-import androidx.compose.foundation.layout.*
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.ttdrp.gameofthrones.R
 import com.ttdrp.gameofthrones.data.houses.HouseResponse
 import com.ttdrp.gameofthrones.data.houses.housesMock
-import com.ttdrp.gameofthrones.ui.ThemedPreview
+import com.ttdrp.gameofthrones.database.HouseDatabase
+import com.ttdrp.gameofthrones.ui.LocalNavController
+import com.ttdrp.gameofthrones.ui.LocalTopAppBarController
+import com.ttdrp.gameofthrones.ui.general.FullScreenError
+import com.ttdrp.gameofthrones.ui.general.FullScreenLoading
+import com.ttdrp.gameofthrones.ui.houses.elements.HouseCard
+import com.ttdrp.gameofthrones.ui.houses.elements.HouseListDivider
+import com.ttdrp.gameofthrones.utils.*
 import com.ttdrp.gameofthrones.viewmodels.HousesViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun HousesScreen(
-    navController: NavController,
     housesViewModel: HousesViewModel,
-    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+    val navController = LocalNavController.current
+    val topAppBarController = LocalTopAppBarController.current
+
+    topAppBarController.update { HousesScreenTopBar() }
+
     HousesScreen(
-        houses = housesViewModel.pagingDataFlow.collectAsLazyPagingItems(),
-        scaffoldState = scaffoldState
+        houses = housesViewModel.pagingDataFlow.collectAsLazyPagingItems()
     ) {
         navController.navigate("house/$it")
     }
 }
 
+@Composable
+private fun HousesScreenTopBar() {
+    val title = stringResource(id = R.string.app_name)
+    TopAppBar(
+        title = { Text(text = title) },
+        navigationIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_gameofthrones_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(ratio = 0.9f)
+                    .padding(start = 12.dp)
+            )
+        }
+    )
+
+}
 
 @Composable
 private fun HousesScreen(
-    houses: LazyPagingItems<HouseResponse>,
-    scaffoldState: ScaffoldState,
+    houses: LazyPagingItems<HouseDatabase>,
     onHouseClick: (String) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        scaffoldState = scaffoldState,
-        topBar = {
-            val title = stringResource(id = R.string.app_name)
-            TopAppBar(
-                title = { Text(text = title) },
-                navigationIcon = {
-                    IconButton(onClick = { coroutineScope.launch { scaffoldState.drawerState.open() } }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_gameofthrones_logo),
-                            contentDescription = ""
-                        )
-                    }
-                }
-            )
-        },
-        content = { innerPadding ->
-            val modifier = Modifier.padding(innerPadding)
-            LoadingContent(
-                empty = houses.itemCount == 0,
-                emptyContent = { FullScreenLoading() }
-            ) {
-                HousesScreenErrorAndContent(
-                    houses = houses,
-                    modifier = modifier,
-                    onHouseClick = onHouseClick
-                )
-            }
-        }
-    )
+    LoadingContent(
+        empty = houses.itemCount == 0,
+        emptyContent = { FullScreenLoading() }
+    ) {
+        HousesScreenErrorAndContent(
+            houses = houses,
+            onHouseClick = onHouseClick
+        )
+    }
 }
 
 @Composable
@@ -93,73 +97,25 @@ private fun LoadingContent(
 }
 
 @Composable
-fun FullScreenLoading() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-/*
-@Composable
-private fun HousesScreenErrorAndContent(
-    navController: NavController,
-    houses: UiState<List<House>>,
-    modifier: Modifier = Modifier
-) {
-    if (houses.data != null) {
-        HousesList(
-            houses = houses.data,
-            modifier = modifier
-        ) {
-            navController.navigate("house/$it")
-        }
-    } else {
-        Box(modifier.fillMaxSize()) {
-            Text(text = "An unknown Error occurred")
-        }
-    }
-}
-*/
-
-@Composable
 private fun HousesScreenErrorAndContent(
     modifier: Modifier = Modifier,
-    houses: LazyPagingItems<HouseResponse>,
+    houses: LazyPagingItems<HouseDatabase>,
     onHouseClick: (String) -> Unit
 ) {
     if (houses.itemCount != 0) {
-        HousesList2(
+        HousesList(
             houses = houses,
             modifier = modifier,
             onHouseClick = onHouseClick
         )
     } else {
-        Box(modifier.fillMaxSize()) {
-            Text(text = "An unkown Error occurred")
-        }
+        FullScreenError(errorMessage = "Houses are empty")
     }
 }
 
 @Composable
 private fun HousesList(
-    houses: List<HouseResponse>,
-    modifier: Modifier = Modifier,
-    onHouseClick: (String) -> Unit
-) {
-    LazyColumn(modifier = modifier) {
-        item {
-            HousesSection(houses = houses) { onHouseClick(it) }
-        }
-    }
-}
-
-@Composable
-private fun HousesList2(
-    houses: LazyPagingItems<HouseResponse>,
+    houses: LazyPagingItems<HouseDatabase>,
     modifier: Modifier = Modifier,
     onHouseClick: (String) -> Unit
 ) {
@@ -175,54 +131,39 @@ private fun HousesList2(
                 HouseListDivider()
             }
         }
-        houses.apply {
-            when {
-                loadState.refresh is LoadState.Loading -> {}
-                loadState.append is LoadState.Loading -> {}
-                loadState.append is LoadState.Error -> {}
-            }
-        }
     }
 }
 
+@Preview(
+    name = "Houses screen $PreviewLight",
+    group = PreviewGroupLight,
+    showBackground = true
+)
+@Preview(
+    name = "Houses screen $PreviewDark",
+    group = PreviewGroupDark,
+    showBackground = true,
+    backgroundColor = PreviewBackgroundDark,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
-private fun HousesSection(
-    houses: List<HouseResponse>,
-    onHouseClick: (String) -> Unit
-) {
-    Column {
-        houses.forEach { house ->
-            HouseCard(
-                house = house
-            ) {
-                onHouseClick(it)
-            }
-            HouseListDivider()
-        }
-    }
+private fun HousesScreenTopBarPreview() = ThemedPreview {
+    HousesScreenTopBar()
 }
 
+@Preview(
+    name = "Houses screen $PreviewLight",
+    group = PreviewGroupLight,
+    showBackground = true
+)
+@Preview(
+    name = "Houses screen $PreviewDark",
+    group = PreviewGroupDark,
+    showBackground = true,
+    backgroundColor = PreviewBackgroundDark,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
-private fun HouseListDivider() {
-    Divider(
-        modifier = Modifier.padding(horizontal = 14.dp),
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.08f)
-    )
-}
-
-
-@Preview(name = "Houses screen body")
-@Composable
-fun PreviewHousesScreenBody() {
-    ThemedPreview {
-        HousesList(houses = housesMock) {}
-    }
-}
-
-@Preview("Houses screen dark theme")
-@Composable
-fun PreviewHousesScreenBodyDark() {
-    ThemedPreview(darkTheme = true) {
-        HousesList(houses = housesMock) {}
-    }
+private fun PreviewHousesScreenBody() = ThemedPreview {
+    HousesList(houses = flowOf(PagingData.from(housesMock)).collectAsLazyPagingItems()) {}
 }

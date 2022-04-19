@@ -6,7 +6,9 @@ import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
 import com.ttdrp.gameofthrones.data.houses.HouseResponse
+import com.ttdrp.gameofthrones.database.HouseDatabase
 import com.ttdrp.gameofthrones.database.HousesDatabase
+import com.ttdrp.gameofthrones.database.toDatabaseModels
 import com.ttdrp.gameofthrones.model.RemoteKeys
 import com.ttdrp.gameofthrones.network.ApiService
 import retrofit2.HttpException
@@ -18,11 +20,11 @@ private const val HOUSES_STARTING_PAGE_INDEX = 1
 class HouseRemoteMediator(
     private val service: ApiService,
     private val housesDatabase: HousesDatabase
-) : RemoteMediator<Int, HouseResponse>() {
+) : RemoteMediator<Int, HouseDatabase>() {
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, HouseResponse>
+        state: PagingState<Int, HouseDatabase>
     ): MediatorResult {
         val page = when (loadType) {
             LoadType.REFRESH -> {
@@ -58,7 +60,7 @@ class HouseRemoteMediator(
                     RemoteKeys(id = it.url, prevKey = prevKey, nextKey = nextKey)
                 }
                 housesDatabase.remoteKeysDao().insertAll(keys)
-                housesDatabase.houseDao().insertAll(apiResponse)
+                housesDatabase.houseDao().insertAll(apiResponse.toDatabaseModels())
             }
             return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
         } catch (e: IOException) {
@@ -68,21 +70,21 @@ class HouseRemoteMediator(
         }
     }
 
-    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, HouseResponse>): RemoteKeys? {
+    private suspend fun getRemoteKeyForLastItem(state: PagingState<Int, HouseDatabase>): RemoteKeys? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { house ->
                 housesDatabase.remoteKeysDao().remoteKeysHouseId(house.url)
             }
     }
 
-    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, HouseResponse>): RemoteKeys? {
+    private suspend fun getRemoteKeyForFirstItem(state: PagingState<Int, HouseDatabase>): RemoteKeys? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()
             ?.let { house ->
                 housesDatabase.remoteKeysDao().remoteKeysHouseId(house.url)
             }
     }
 
-    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, HouseResponse>): RemoteKeys? {
+    private suspend fun getRemoteKeyClosestToCurrentPosition(state: PagingState<Int, HouseDatabase>): RemoteKeys? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.url?.let { url ->
                 housesDatabase.remoteKeysDao().remoteKeysHouseId(url)
