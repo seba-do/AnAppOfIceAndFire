@@ -85,7 +85,7 @@ private fun HouseScreenErrorAndContent(
             onLordClick = onLordClick
         )
     } else {
-        FullScreenError(errorMessage = house.exception?.message ?: "")
+        FullScreenError(errorMessage = house.exception?.message.orEmpty())
     }
 }
 
