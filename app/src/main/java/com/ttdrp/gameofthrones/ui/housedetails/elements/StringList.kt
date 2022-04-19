@@ -1,5 +1,6 @@
 package com.ttdrp.gameofthrones.ui.housedetails.elements
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -10,7 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ttdrp.gameofthrones.ui.ThemedPreview
+import com.ttdrp.gameofthrones.utils.*
+import com.ttdrp.gameofthrones.utils.ThemedPreview
 
 @Composable
 fun StringList(
@@ -40,7 +42,18 @@ fun StringList(
     }
 }
 
-@Preview
+@Preview(
+    name = "String List $PreviewLight",
+    group = PreviewGroupLight,
+    showBackground = true
+)
+@Preview(
+    name = "String List $PreviewDark",
+    group = PreviewGroupDark,
+    showBackground = true,
+    backgroundColor = PreviewBackgroundDark,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun StringListPreview() {
     ThemedPreview {

@@ -1,5 +1,6 @@
-package com.ttdrp.gameofthrones.ui.houses
+package com.ttdrp.gameofthrones.ui.houses.elements
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -15,23 +16,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.data.houses.HouseResponse
 import com.ttdrp.gameofthrones.data.houses.houseDiedOut
-import com.ttdrp.gameofthrones.ui.ThemedPreview
+import com.ttdrp.gameofthrones.database.HouseDatabase
+import com.ttdrp.gameofthrones.utils.*
 
 
 @Composable
-fun HouseName(house: HouseResponse) {
+fun HouseName(house: HouseDatabase) {
     Text(house.name, style = MaterialTheme.typography.subtitle1)
 }
 
 @Composable
-fun RegionName(house: HouseResponse) {
+fun RegionName(house: HouseDatabase) {
     Text(house.region, style = MaterialTheme.typography.subtitle2)
 }
 
 @Composable
-fun HouseStatusImage(house: HouseResponse, modifier: Modifier = Modifier) {
+fun HouseStatusImage(house: HouseDatabase, modifier: Modifier = Modifier) {
     if (house.diedOut.isNotEmpty()) {
         Image(
             painter = painterResource(id = R.drawable.ic_cross),
@@ -40,20 +41,20 @@ fun HouseStatusImage(house: HouseResponse, modifier: Modifier = Modifier) {
                 .size(40.dp, 40.dp)
                 .clip(MaterialTheme.shapes.small)
                 .padding(5.dp)
-        )    
+        )
     }
-    
+
 }
 
 @Composable
 fun HouseCard(
-    house: HouseResponse,
+    house: HouseDatabase,
     onHouseClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier
             .clickable(onClick = {
-                onHouseClick(house.name)
+                onHouseClick(house.id)
             })
             .padding(16.dp)
     ) {
@@ -65,12 +66,23 @@ fun HouseCard(
     }
 }
 
-@Preview("House card")
+@Preview(
+    name = "Houses card $PreviewLight",
+    group = PreviewGroupLight,
+    showBackground = true
+)
+@Preview(
+    name = "Houses card $PreviewDark",
+    group = PreviewGroupDark,
+    showBackground = true,
+    backgroundColor = PreviewBackgroundDark,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
-fun HouseCardPreview() {
+private fun HouseCardPreview() {
     val house = houseDiedOut
 
     ThemedPreview {
-//        HouseCard(house = house, {})
+        HouseCard(house = house) {}
     }
 }

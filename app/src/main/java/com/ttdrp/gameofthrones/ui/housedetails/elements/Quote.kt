@@ -1,5 +1,6 @@
 package com.ttdrp.gameofthrones.ui.housedetails.elements
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
@@ -15,7 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ttdrp.gameofthrones.R
-import com.ttdrp.gameofthrones.ui.ThemedPreview
+import com.ttdrp.gameofthrones.utils.*
+import com.ttdrp.gameofthrones.utils.ThemedPreview
 
 @Composable
 fun HouseWordQuote(
@@ -57,9 +59,20 @@ private fun HouseWordQuoteIcon() {
     )
 }
 
-@Preview
+@Preview(
+    name = "House Quote $PreviewLight",
+    group = PreviewGroupLight,
+    showBackground = true
+)
+@Preview(
+    name = "House Quote $PreviewDark",
+    group = PreviewGroupDark,
+    showBackground = true,
+    backgroundColor = PreviewBackgroundDark,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
-fun PreviewWordQuote() {
+private fun HouseQuotePreview() {
     ThemedPreview {
         HouseWordQuote(quote = "This is an absurd long quote, which feels like it would never end so we can test, how multiple lines look and how it behaves")
     }
