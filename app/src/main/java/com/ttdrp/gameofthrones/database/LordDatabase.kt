@@ -1,8 +1,13 @@
-package com.ttdrp.gameofthrones.data.lord
+package com.ttdrp.gameofthrones.database
 
-import com.ttdrp.gameofthrones.database.LordDatabase
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.ttdrp.gameofthrones.data.lord.LordResponse
 
-data class LordResponse(
+@Entity(tableName = "Lords")
+data class LordDatabase(
+    @PrimaryKey
+    val id: String,
     val url: String,
     val name: String,
     val gender: String,
@@ -17,7 +22,8 @@ data class LordResponse(
     val allegiances: List<String>
 )
 
-fun LordDatabase.toResponseModel() = LordResponse(
+fun LordResponse.toDatabaseModel() = LordDatabase(
+    id = url.split("/").last(),
     url,
     name,
     gender,

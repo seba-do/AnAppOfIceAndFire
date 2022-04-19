@@ -1,6 +1,11 @@
 package com.ttdrp.gameofthrones.data.houses
 
-val house1 = HouseResponse(
+import com.ttdrp.gameofthrones.data.lord.lord1
+import com.ttdrp.gameofthrones.database.HouseDatabase
+import com.ttdrp.gameofthrones.model.toResolved
+
+val house1 = HouseDatabase(
+    id = "1",
     url = "https://www.anapioficeandfire.com/api/houses/1",
     name = "House Algood",
     region = "The Westerlands",
@@ -18,7 +23,8 @@ val house1 = HouseResponse(
     cadetBranches = listOf(),
     swornMembers = listOf()
 )
-val house2 = HouseResponse(
+val house2 = HouseDatabase(
+    id = "2",
     url = "https://www.anapioficeandfire.com/api/houses/2",
     name = "House Allyrion of Godsgrace",
     region = "Dorne",
@@ -41,7 +47,8 @@ val house2 = HouseResponse(
         "https://www.anapioficeandfire.com/api/characters/1922"
     )
 )
-val house3 = HouseResponse(
+val house3 = HouseDatabase(
+    id = "3",
     url = "https://www.anapioficeandfire.com/api/houses/3",
     name = "House Amber",
     region = "The North",
@@ -59,7 +66,8 @@ val house3 = HouseResponse(
     cadetBranches = listOf(),
     swornMembers = listOf()
 )
-val house4 = HouseResponse(
+val house4 = HouseDatabase(
+    id = "4",
     url = "https://www.anapioficeandfire.com/api/houses/4",
     name = "House Ambrose",
     region = "The Reach",
@@ -83,7 +91,8 @@ val house4 = HouseResponse(
         "https://www.anapioficeandfire.com/api/characters/344"
     )
 )
-val house5 = HouseResponse(
+val house5 = HouseDatabase(
+    id = "5",
     url = "https://www.anapioficeandfire.com/api/houses/5",
     name = "House Appleton of Appleton",
     region = "The Reach",
@@ -101,7 +110,8 @@ val house5 = HouseResponse(
     cadetBranches = listOf(),
     swornMembers = listOf()
 )
-val house6 = HouseResponse(
+val house6 = HouseDatabase(
+    id = "6",
     url = "https://www.anapioficeandfire.com/api/houses/6",
     name = "House Arryn of Gulltown",
     region = "The Vale",
@@ -119,7 +129,8 @@ val house6 = HouseResponse(
     cadetBranches = listOf(),
     swornMembers = listOf()
 )
-val house7 = HouseResponse(
+val house7 = HouseDatabase(
+    id = "7",
     url = "https://www.anapioficeandfire.com/api/houses/7",
     name = "House Arryn of the Eyrie",
     region = "The Vale",
@@ -170,7 +181,8 @@ val house7 = HouseResponse(
         "https://www.anapioficeandfire.com/api/characters/1884"
     )
 )
-val house8 = HouseResponse(
+val house8 = HouseDatabase(
+    id = "8",
     url = "https://www.anapioficeandfire.com/api/houses/8",
     name = "House Ashford of Ashford",
     region = "The Reach",
@@ -193,7 +205,8 @@ val house8 = HouseResponse(
         "https://www.anapioficeandfire.com/api/characters/1812"
     )
 )
-val house9 = HouseResponse(
+val house9 = HouseDatabase(
+    id = "9",
     url = "https://www.anapioficeandfire.com/api/houses/9",
     name = "House Ashwood",
     region = "The North",
@@ -211,7 +224,8 @@ val house9 = HouseResponse(
     cadetBranches = listOf(),
     swornMembers = listOf()
 )
-val house10 = HouseResponse(
+val house10 = HouseDatabase(
+    id = "10",
     url = "https://www.anapioficeandfire.com/api/houses/10",
     name = "House Baelish of Harrenhal",
     region = "The Riverlands",
@@ -238,7 +252,7 @@ val house10 = HouseResponse(
 
 val houseDiedOut = house1.copy(diedOut = "Some war")
 
-val housesMock: List<HouseResponse> =
+val housesMock: List<HouseDatabase> =
     listOf(
         house1,
         house2,
@@ -252,3 +266,5 @@ val housesMock: List<HouseResponse> =
         house10,
         houseDiedOut
     )
+
+val house1Resolved = house1.toResolved(lord1, house2, listOf(house2), listOf(lord1), lord1)

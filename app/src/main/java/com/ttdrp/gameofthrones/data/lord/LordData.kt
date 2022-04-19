@@ -1,8 +1,9 @@
-package com.ttdrp.gameofthrones.data.houses.impl
+package com.ttdrp.gameofthrones.data.lord
 
-import com.ttdrp.gameofthrones.model.Lord
+import com.ttdrp.gameofthrones.database.LordDatabase
 
-val lord1 = Lord(
+val lord1 = LordDatabase(
+    id = "1",
     url = "https://www.anapioficeandfire.com/api/characters/663",
     name = "Lucos Chyttering",
     gender = "Male",

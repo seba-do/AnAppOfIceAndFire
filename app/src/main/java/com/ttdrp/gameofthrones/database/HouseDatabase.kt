@@ -1,8 +1,13 @@
-package com.ttdrp.gameofthrones.data.houses
+package com.ttdrp.gameofthrones.database
 
-import com.ttdrp.gameofthrones.database.HouseDatabase
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.ttdrp.gameofthrones.data.houses.HouseResponse
 
-data class HouseResponse(
+@Entity(tableName = "Houses")
+data class HouseDatabase(
+    @PrimaryKey
+    val id: String,
     val url: String,
     val name: String,
     val region: String,
@@ -21,7 +26,8 @@ data class HouseResponse(
     val swornMembers: List<String>
 )
 
-fun HouseDatabase.toResponseModel() = HouseResponse(
+fun HouseResponse.toDatabaseModel() = HouseDatabase(
+    id = url.split("/").last(),
     url,
     name,
     region,
@@ -39,3 +45,5 @@ fun HouseDatabase.toResponseModel() = HouseResponse(
     cadetBranches,
     swornMembers
 )
+
+fun List<HouseResponse>.toDatabaseModels() = map { it.toDatabaseModel() }
