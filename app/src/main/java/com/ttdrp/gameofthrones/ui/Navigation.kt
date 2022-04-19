@@ -10,16 +10,18 @@ import androidx.lifecycle.ViewModel
 import com.ttdrp.gameofthrones.ui.ScreenName.*
 import com.ttdrp.gameofthrones.utils.getMutableStateOf
 
-enum class ScreenName { OVERVIEW, HOUSE }
+enum class ScreenName { OVERVIEW, HOUSE, LORD }
 
 sealed class Screen(val id: ScreenName) {
     object Overview: Screen(OVERVIEW)
     data class House(val name: String) : Screen(HOUSE)
+    data class Lord(val url: String) : Screen(LORD)
 }
 
 private const val SIS_SCREEN = "sis_screen"
 private const val SIS_NAME = "screen_name"
 private const val SIS_HOUSE = "house"
+private const val SIS_LORD = "lord"
 
 private fun Screen.toBundle(): Bundle {
     return bundleOf(SIS_NAME to id.name).also {
@@ -36,6 +38,10 @@ private fun Bundle.toScreen(): Screen {
         HOUSE -> {
             val houseName = getStringOrThrow(SIS_HOUSE)
             Screen.House(houseName)
+        }
+        LORD -> {
+            val lordName = getStringOrThrow(SIS_LORD)
+            Screen.Lord(lordName)
         }
     }
 }

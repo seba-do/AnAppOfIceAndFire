@@ -4,15 +4,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ttdrp.gameofthrones.data.lord.LordResponse
-import com.ttdrp.gameofthrones.model.Lord
 
 @Dao
 interface LordDao {
 
-    @Query("select * from LordResponse where url is (:url)")
-    suspend fun getLord(url: String): LordResponse?
+    @Query("select * from Lords where id is (:id)")
+    suspend fun getLord(id: Int): LordDatabase?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLord(lord: LordResponse)
+    suspend fun insertLord(lord: LordDatabase)
 }
