@@ -11,7 +11,7 @@ object Versions {
 
     // Compose
     const val activityCompose = "1.3.0-rc02"
-    const val compose = "1.2.0-alpha05"
+    const val compose = "1.2.0-alpha07"
 
     // Lifecycle
     const val lifecycle = "2.3.1"
