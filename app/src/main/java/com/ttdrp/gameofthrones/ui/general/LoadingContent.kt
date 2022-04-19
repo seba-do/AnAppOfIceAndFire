@@ -4,12 +4,12 @@ import androidx.compose.runtime.Composable
 
 @Composable
 fun LoadingContent(
-    empty: Boolean,
-    emptyContent: @Composable () -> Unit,
+    loading: Boolean,
+    loadingContent: @Composable () -> Unit,
     content: @Composable () -> Unit
 ) {
-    if (empty) {
-        emptyContent()
+    if (loading) {
+        loadingContent()
     } else {
         content()
     }

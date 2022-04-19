@@ -59,8 +59,8 @@ private fun HouseScreen(
     onLordClick: (String) -> Unit
 ) {
     LoadingContent(
-        empty = house.initialLoad,
-        emptyContent = { FullScreenLoading() },
+        loading = house.initialLoad,
+        loadingContent = { FullScreenLoading() },
     ) {
         HouseScreenErrorAndContent(
             house = house,
