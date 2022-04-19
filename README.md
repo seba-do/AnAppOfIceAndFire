@@ -16,3 +16,8 @@ An App to show the houses from the [API of Ice And Fire](https://anapioficeandfi
 - Moshi
 - MVVM
 - KotlinDSL
+
+## Todo
+
+- Display more of the House-Details on the Details-Screen
+- Fill Lord-Screen with details
