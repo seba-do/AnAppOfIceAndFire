@@ -1,4 +1,4 @@
-package com.ttdrp.gameofthrones.ui
+package com.ttdrp.gameofthrones.utils
 
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -6,12 +6,17 @@ import com.ttdrp.gameofthrones.ui.theme.GameOfThronesTheme
 
 @Composable
 internal fun ThemedPreview(
-    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    GameOfThronesTheme(darkTheme = darkTheme) {
+    GameOfThronesTheme {
         Surface {
             content()
         }
     }
 }
+
+const val PreviewLight = "(Light)"
+const val PreviewDark = "(Dark)"
+const val PreviewGroupLight = "Light"
+const val PreviewGroupDark = "Dark"
+const val PreviewBackgroundDark =  0x00000000L
