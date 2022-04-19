@@ -1,7 +1,5 @@
 package com.ttdrp.gameofthrones.data.houses
 
-import com.ttdrp.gameofthrones.database.HouseDatabase
-
 data class HouseResponse(
     val url: String,
     val name: String,
@@ -19,23 +17,4 @@ data class HouseResponse(
     val ancestralWeapons: List<String>,
     val cadetBranches: List<String>,
     val swornMembers: List<String>
-)
-
-fun HouseDatabase.toResponseModel() = HouseResponse(
-    url,
-    name,
-    region,
-    coatOfArms,
-    words,
-    titles,
-    seats,
-    currentLord,
-    heir,
-    overlord,
-    founded,
-    founder,
-    diedOut,
-    ancestralWeapons,
-    cadetBranches,
-    swornMembers
 )

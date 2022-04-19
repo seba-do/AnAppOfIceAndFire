@@ -1,7 +1,5 @@
 package com.ttdrp.gameofthrones.data.lord
 
-import com.ttdrp.gameofthrones.database.LordDatabase
-
 data class LordResponse(
     val url: String,
     val name: String,
@@ -15,19 +13,4 @@ data class LordResponse(
     val mother: String,
     val spouse: String,
     val allegiances: List<String>
-)
-
-fun LordDatabase.toResponseModel() = LordResponse(
-    url,
-    name,
-    gender,
-    culture,
-    born,
-    died,
-    titles,
-    aliases,
-    father,
-    mother,
-    spouse,
-    allegiances
 )
