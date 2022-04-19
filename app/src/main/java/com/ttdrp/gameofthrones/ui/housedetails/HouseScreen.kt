@@ -45,14 +45,16 @@ fun HouseScreen(
 
     HouseScreen(
         house = houseUiState.value,
-    ) {
-        navController.navigate("lord/$it")
-    }
+        onHouseClick = { navController.navigate("house/$it") },
+        onLordClick = { navController.navigate("lord/$it") }
+    )
+
 }
 
 @Composable
 private fun HouseScreen(
     house: UiState<HouseResolved>,
+    onHouseClick: (String) -> Unit,
     onLordClick: (String) -> Unit
 ) {
     LoadingContent(
@@ -61,6 +63,7 @@ private fun HouseScreen(
     ) {
         HouseScreenErrorAndContent(
             house = house,
+            onHouseClick = onHouseClick,
             onLordClick = onLordClick
         )
     }
@@ -83,12 +86,14 @@ private fun LoadingContent(
 private fun HouseScreenErrorAndContent(
     house: UiState<HouseResolved>,
     modifier: Modifier = Modifier,
+    onHouseClick: (String) -> Unit,
     onLordClick: (String) -> Unit
 ) {
     if (house.data != null) {
         House(
             house = house.data,
             modifier = modifier,
+            onHouseClick = onHouseClick,
             onLordClick = onLordClick
         )
     } else {
@@ -100,6 +105,7 @@ private fun HouseScreenErrorAndContent(
 private fun House(
     house: HouseResolved,
     modifier: Modifier = Modifier,
+    onHouseClick: (String) -> Unit,
     onLordClick: (String) -> Unit,
 ) {
     LazyColumn(
@@ -152,7 +158,16 @@ private fun House(
         item {
             Headlined(headline = "Current Lord") {
                 if (house.currentLord != null) {
-                    Link(linkText = house.currentLord.name) { onLordClick(house.id) }
+                    Link(linkText = house.currentLord.name) { onLordClick(house.currentLord.id) }
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
+            Headlined(headline = "Overlord") {
+                if (house.overlord != null) {
+                    Link(linkText = house.overlord.name) { onHouseClick(house.overlord.id) }
                 } else {
                     NoInformation()
                 }
@@ -165,6 +180,10 @@ private fun House(
 @Composable
 fun PreviewHouseScreenBody() {
     ThemedPreview {
-        House(house = house1Resolved) {}
+        House(
+            house = house1Resolved,
+            onHouseClick = {},
+            onLordClick = {}
+        )
     }
 }
