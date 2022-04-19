@@ -13,7 +13,7 @@ data class HouseResolved(
     val titles: List<String>,
     val seats: List<String>,
     val currentLord: LordDatabase?,
-    val heir: String,
+    val heir: LordDatabase?,
     val overlord: HouseDatabase?,
     val founded: String,
     val founder: LordDatabase?,
@@ -26,6 +26,7 @@ data class HouseResolved(
 fun HouseDatabase.toResolved(
     currentLord: LordDatabase?,
     overlord: HouseDatabase?,
+    heir: LordDatabase?,
     cadetBranches: List<HouseDatabase>?,
     swornMembers: List<LordDatabase>?,
     founder: LordDatabase?

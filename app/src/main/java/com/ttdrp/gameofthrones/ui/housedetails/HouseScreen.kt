@@ -165,6 +165,15 @@ private fun House(
             }
         }
         item {
+            Headlined(headline = "Heir") {
+                if (house.heir != null) {
+                    Link(linkText = house.heir.name) { onLordClick(house.heir.id) }
+                } else {
+                    NoInformation()
+                }
+            }
+        }
+        item {
             Headlined(headline = "Overlord") {
                 if (house.overlord != null) {
                     Link(linkText = house.overlord.name) { onHouseClick(house.overlord.id) }
