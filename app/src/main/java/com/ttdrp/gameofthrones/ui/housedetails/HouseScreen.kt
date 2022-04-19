@@ -19,6 +19,7 @@ import com.ttdrp.gameofthrones.ui.LocalTopAppBarController
 import com.ttdrp.gameofthrones.ui.general.DefaultTopAppBar
 import com.ttdrp.gameofthrones.ui.general.FullScreenError
 import com.ttdrp.gameofthrones.ui.general.FullScreenLoading
+import com.ttdrp.gameofthrones.ui.general.LoadingContent
 import com.ttdrp.gameofthrones.ui.housedetails.elements.*
 import com.ttdrp.gameofthrones.ui.state.UiState
 import com.ttdrp.gameofthrones.utils.ThemedPreview
@@ -66,19 +67,6 @@ private fun HouseScreen(
             onHouseClick = onHouseClick,
             onLordClick = onLordClick
         )
-    }
-}
-
-@Composable
-private fun LoadingContent(
-    empty: Boolean,
-    emptyContent: @Composable () -> Unit,
-    content: @Composable () -> Unit
-) {
-    if (empty) {
-        emptyContent()
-    } else {
-        content()
     }
 }
 
