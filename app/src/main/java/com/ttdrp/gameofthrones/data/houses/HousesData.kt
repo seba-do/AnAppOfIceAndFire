@@ -267,4 +267,11 @@ val housesMock: List<HouseDatabase> =
         houseDiedOut
     )
 
-val house1Resolved = house1.toResolved(lord1, house2, listOf(house2), listOf(lord1), lord1)
+val house1Resolved = house1.toResolved(
+    currentLord = lord1,
+    overlord = house2,
+    heir = lord1,
+    cadetBranches = listOf(house2),
+    swornMembers = listOf(lord1),
+    founder = lord1
+)
