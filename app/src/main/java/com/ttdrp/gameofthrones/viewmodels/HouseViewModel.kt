@@ -16,36 +16,41 @@ class HouseViewModel @Inject constructor(
 ) : ViewModel() {
 
     suspend fun getResolvedHouse(id: String) = try {
-        val houseBase = (getHouse(id) as Result.Success).data
+        val houseBase = (houseRepo.getHouse(id) as Result.Success).data
 
         val currentLord = houseBase.currentLord
             .takeIf { it.isNotBlank() }
-            ?.let { (getLord(it.id()) as Result.Success).data }
+            ?.let { (lordRepo.getLord(it.id()) as Result.Success).data }
 
         val overlord = houseBase.overlord
             .takeIf { it.isNotBlank() }
-            ?.let { (getHouse(houseBase.overlord.id()) as Result.Success).data }
+            ?.let { (houseRepo.getHouse(it.id()) as Result.Success).data }
+
+        val heir = houseBase.heir
+            .takeIf { it.isNotBlank() }
+            ?.let { (lordRepo.getLord(it.id()) as Result.Success).data }
 
         val cadetBranches = houseBase.cadetBranches
             .takeIf { it.isNotEmpty() }
             ?.map {
-                (getHouse(it.id()) as Result.Success).data
+                (houseRepo.getHouse(it.id()) as Result.Success).data
             }
 
         val swornMembers = houseBase.swornMembers
             .takeIf { it.isNotEmpty() }
             ?.map {
-                (getLord(it.id()) as Result.Success).data
+                (lordRepo.getLord(it.id()) as Result.Success).data
             }
 
         val founder = houseBase.founder
             .takeIf { it.isNotBlank() }
-            ?.let { (getLord(houseBase.founder.id()) as Result.Success).data }
+            ?.let { (lordRepo.getLord(it.id()) as Result.Success).data }
 
         Result.Success(
             houseBase.toResolved(
                 currentLord = currentLord,
                 overlord = overlord,
+                heir = heir,
                 cadetBranches = cadetBranches,
                 swornMembers = swornMembers,
                 founder = founder
@@ -54,8 +59,4 @@ class HouseViewModel @Inject constructor(
     } catch (e: Exception) {
         Result.Error(e)
     }
-
-    private suspend fun getHouse(id: String) = houseRepo.getHouse(id)
-
-    private suspend fun getLord(id: String) = lordRepo.getLord(id)
 }
